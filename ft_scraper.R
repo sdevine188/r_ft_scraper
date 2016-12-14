@@ -61,7 +61,17 @@ get_article_text <- function(all_section_urls) {
         }
         for(i in 1:length(all_article_urls)) {
                 current_section_title <- all_article_sections[i]
-                article_json <- fromJSON(all_article_urls[i])
+                article_json <- tryCatch({
+                                fromJSON(all_article_urls[i])
+                        }, error = function(error_message) {
+                                print("error attempting to get JSON using fromJSON(url) command")
+                                print(str_c("url is: ", all_article_urls[i]))
+                                print("skipping to next article")
+                                error_message
+                        })
+                if(inherits(article_json, "error")) { 
+                        next
+                }
                 article_date <- ymd_hms(article_json$publishedDate)
                 if(day(article_date) == day(current_date)) {
                         columnists <- c("Edward Luce", "John Gapper", "Janan Ganesh", "John Thornhill", "Wolfgang Münchau",
@@ -76,11 +86,13 @@ get_article_text <- function(all_section_urls) {
                                               article_text, "{{split}}", sep = " ")
                         article_counter <- article_counter + 1
                         print(article_counter)
+                        print(all_article_urls[i])
                         all_section_text <- c(all_section_text, article_text)
                         section_tally <- c(section_tally, current_section_title)
                 }
         }
-
+                
+                
         # final output
         print(str_c("complete: ", length(all_section_text), " unique articles for ", current_date))
         section_tally <- data.frame(section = section_tally)
