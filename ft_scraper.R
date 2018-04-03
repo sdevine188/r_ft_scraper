@@ -13,11 +13,11 @@ setwd("C:/Users/Stephen/Desktop/R/ft")
 # set initial variables
 api_key <- "hNIqHozr1JA4f2mU0uDZA2GkZfVzhpQC"
 current_date <- ymd(Sys.Date())
-all_section_urls <- c("https://www.ft.com/global-economy", "https://www.ft.com/world/us", "https://www.ft.com/world/europe",
+all_section_urls <- c("https://www.ft.com/world/us", "https://www.ft.com/world/europe",
                       "https://www.ft.com/china", "https://www.ft.com/world/asia-pacific", "https://www.ft.com/world/mideast",
                       "https://www.ft.com/world/africa", "https://www.ft.com/world/americas", 
                       "https://www.ft.com/comment")
-section_titles <- c("global economy", "us", "europe", "china", "asia", "middle east", "africa", "americas",
+section_titles <- c("us", "europe", "china", "asia", "middle east", "africa", "americas",
                     "comments")
 all_article_urls <- c()
 all_article_sections <- c()
@@ -30,7 +30,7 @@ get_article_text <- function(all_section_urls) {
         for(section_url in 1:length(all_section_urls)) {
                 current_section_title <- section_titles[section_url]
                 html <- read_html(all_section_urls[section_url])
-                article_links <- html %>% html_nodes(xpath = "//div[@class = 'o-teaser__heading js-teaser-heading']/a") %>% html_attr("href")
+                article_links <- html %>% html_nodes(xpath = "//div[@class = 'o-teaser__heading o-teaser__heading--visited js-teaser-heading']/a") %>% html_attr("href")
 
                 # build api urls
                 article_urls <- str_c("http://api.ft.com", article_links, "?apiKey=hNIqHozr1JA4f2mU0uDZA2GkZfVzhpQC", sep = "")
